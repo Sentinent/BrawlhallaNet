@@ -1,0 +1,18 @@
+*.log
+*.user
+*.suo
+*.settings
+*.nupkg
+*.nuspec
+*.props
+*.targets
+*.exe
+
+bin/
+obj/
+TestReults/
+packages/
+Service Capabilities/
+lib/
+
+apikey.txt
