@@ -76,7 +76,7 @@ namespace BrawlhallaNet
         /// <returns>A list of players found.</returns>
         public async Task<List<RankedPagePlayer>> GetRankedPageAsync(string bracket, string region, int page = 1, string name = null)
         {
-            if (region != "1v1" || region != "2v2")
+            if (bracket != "1v1" || bracket != "2v2")
             {
                 throw new ArgumentException("Bracket must be either 1v1 or 2v2.", bracket);
             }
