@@ -9,10 +9,10 @@ namespace BrawlhallaNetTests
     [TestClass]
     public class Tests
     {
-        private BrawlhallaApiClient client;
+        private static BrawlhallaApiClient client;
 
         [ClassInitialize]
-        public void Initialize()
+        public static void Initialize(TestContext whatTheFuckIsThis)
         {
             using (var streamReader = new StreamReader("apikey.txt")) // This is .gitignored
             {
@@ -32,7 +32,7 @@ namespace BrawlhallaNetTests
         {
             var dan = await client.GetPlayerFromSteamIdAsync(76561198025185087);
 
-            Assert.AreEqual(2, dan.BrawlhallaID);
+            Assert.AreEqual((ulong)2, dan.BrawlhallaID);
             Assert.AreEqual("[BMG] Dan", dan.Name); // This test could fail frequently
         }
 
@@ -60,6 +60,14 @@ namespace BrawlhallaNetTests
 
             Assert.AreEqual("NEKO", clan.Name);
             Assert.AreEqual(1464206400, clan.ClanCreationDateUnix);
+        }
+
+        [TestMethod]
+        public async Task TestGetRankedPageAsync()
+        {
+            var topPlayers = await client.GetRankedPageAsync("1v1", "all", 1);
+
+            Assert.AreNotEqual(0, topPlayers.Count);
         }
     }
 }

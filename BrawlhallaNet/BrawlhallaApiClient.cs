@@ -76,16 +76,16 @@ namespace BrawlhallaNet
         /// <returns>A list of players found.</returns>
         public async Task<List<RankedPagePlayer>> GetRankedPageAsync(string bracket, string region, int page = 1, string name = null)
         {
-            if (bracket != "1v1" || bracket != "2v2")
+            if (bracket != "1v1" && bracket != "2v2")
             {
                 throw new ArgumentException("Bracket must be either 1v1 or 2v2.", bracket);
             }
-            else if (region != "us-e" || region != "us-w" || region != "eu" || region != "sea" || region != "brz" || region != "aus")
+            else if (region != "us-e" && region != "us-w" && region != "eu" && region != "sea" && region != "brz" && region != "aus" && region != "all")
             {
-                throw new ArgumentException("Region must be one of us-e, us-w, eu, sea, brz, or aus.");
+                throw new ArgumentException("Region must be one of us-e, us-w, eu, sea, brz, or aus.", region);
             }
 
-            return await GetResponseAsync<List<RankedPagePlayer>>($"{Constants.BaseEndpoint}/rankings/{region}/{page}/" + (name == null ? "" : $"?name={name}/"));
+            return await GetResponseAsync<List<RankedPagePlayer>>($"{Constants.BaseEndpoint}/rankings/{bracket}/{region}/{page}/" + (name == null ? "" : $"?name={name}/"));
         }
 
         /// <summary>
