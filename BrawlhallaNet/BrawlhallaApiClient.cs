@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BrawlhallaNet
@@ -25,7 +26,7 @@ namespace BrawlhallaNet
         private HttpClient _httpClient = new HttpClient();
         private string _apiKey;
 
-        // As of 12/11
+        // As of 12/11/16
         // Ratelimits are:
         // 180 per 15 minutes
         // 10 per second
@@ -121,7 +122,7 @@ namespace BrawlhallaNet
         /// <summary>
         /// Gets info for a legend.
         /// </summary>
-        /// <param name="legend">THe legend to get information for.</param>
+        /// <param name="legend">The legend to get information for.</param>
         /// <param name="useCache">Whether or not we should use the cached value.</param>
         /// <returns>Information for the legend.</returns>
         public async Task<Legend> GetLegendInfoAsync(Constants.Legends legend, bool useCache = true)
@@ -149,26 +150,13 @@ namespace BrawlhallaNet
         /// <returns>The object with the specified type from the request.</returns>
         public async Task<T> GetResponseAsync<T>(string url)
         {
-            await HandleRateLimits();
+            var response = await GetResponseAsync(url);
 
-            url += $"&api_key={_apiKey}";
-            Log.Invoke(this, new LogEventArgs($"Sending GET request for {url}...", null));
-
-            var data = await _httpClient.GetAsync(url);
-
-            if (!data.IsSuccessStatusCode)
+            using (var textReader = new StringReader(response))
             {
-                Log.Invoke(this, new LogEventArgs($"GET request for {url} returned an error of {data.StatusCode}.", null));
-                throw new BrawlhallaNetException((int)data.StatusCode, data.ReasonPhrase);
-            }
-
-            using (var streamReader = new StreamReader(await data.Content.ReadAsStreamAsync(), encoding: Encoding.UTF8))
-            {
-                using (var jsonReader = new JsonTextReader(streamReader))
+                using (var jsonReader = new JsonTextReader(textReader))
                 {
-                    var result = _serializer.Deserialize<T>(jsonReader);
-                    Log.Invoke(this, new LogEventArgs($"GET request for {url} returned an object of type {result.GetType()}.", result));
-                    return result;
+                    return _serializer.Deserialize<T>(jsonReader);
                 }
             }
         }
@@ -182,11 +170,47 @@ namespace BrawlhallaNet
         {
             await HandleRateLimits();
 
-            var data = await _httpClient.GetStreamAsync(url + $"&api_key={_apiKey}");
-            using (var streamReader = new StreamReader(data, encoding: Encoding.UTF8))
+            url += $"&api_key={_apiKey}";
+            Log.Invoke(this, new LogEventArgs($"Sending GET request for {url}...", null));
+            var data = await _httpClient.GetAsync(url);
+            
+            if (!data.IsSuccessStatusCode)
             {
-                return await streamReader.ReadToEndAsync();
+                Log.Invoke(this, new LogEventArgs($"GET request for {url} returned an error of {data.StatusCode}.", null));
+                throw new BrawlhallaNetException((int)data.StatusCode, data.ReasonPhrase);
             }
+
+            var stringData = await data.Content.ReadAsStringAsync();
+
+            // Handle the response as a string
+            // We lose some performance, but emoji handling is hellish enough as a string
+
+            // Emoji Handling:
+            // API returns emojis as ascii chars which need to be turned into bytes which turns into emojis with utf8 encoding
+            // ex: ✨ = \u00e2\u009c\u00a8 => 226 156 168 => ✨
+            // Meanwhile some characters ARE properly presented, hence the {2,}
+            // bmg why :'(
+            var emojiResolver = new Regex(@"(\\U[0-9A-F]{4}){2,}", RegexOptions.IgnoreCase);
+
+            var emojiMatch = emojiResolver.Matches(stringData);
+            if (emojiMatch.Count > 0)
+            {
+                var byteRegex = new Regex(@"\\U([0-9A-F]{4})", RegexOptions.IgnoreCase);
+                stringData = emojiResolver.Replace(stringData, (initialMatch) => // For every emoji
+                {
+                    var byteMatches = byteRegex.Matches(initialMatch.Value);
+                    byte[] bytes = new byte[byteMatches.Count];
+                    for (int i = 0; i < byteMatches.Count; i++)
+                    {
+                        var unicodeChar = (byteMatches[i] as Match).Groups[1].Value;
+                        int charRep = (char)(int.Parse(unicodeChar, System.Globalization.NumberStyles.HexNumber));
+                        bytes[i] = Convert.ToByte(charRep);
+                    }
+                    return Encoding.UTF8.GetString(bytes);
+                });
+            }
+
+            return stringData;
         }
 
         private async Task HandleRateLimits()

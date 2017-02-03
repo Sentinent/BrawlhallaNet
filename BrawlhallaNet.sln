@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.25928.0
+VisualStudioVersion = 15.0.26020.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrawlhallaNet", "BrawlhallaNet\BrawlhallaNet.csproj", "{E09C0FD4-0679-48D1-BFD5-E2A5DB8BF95E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BrawlhallaNet", "BrawlhallaNet\BrawlhallaNet.csproj", "{E09C0FD4-0679-48D1-BFD5-E2A5DB8BF95E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrawlhallaNetTests", "BrawlhallaNetTests\BrawlhallaNetTests.csproj", "{C1EFD9F5-BAB4-45D8-B8CE-7866006833A1}"
 EndProject

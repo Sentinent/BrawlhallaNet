@@ -34,6 +34,7 @@
             Val = 30,
             Ragnir = 31,
             Cross = 32,
+            Mirage = 33,
             Nonexistant = 9001
         };
     }

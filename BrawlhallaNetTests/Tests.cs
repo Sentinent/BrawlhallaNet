@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Linq;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BrawlhallaNet;
@@ -12,7 +13,7 @@ namespace BrawlhallaNetTests
         private static BrawlhallaApiClient client;
 
         [ClassInitialize]
-        public static void Initialize(TestContext whatTheFuckIsThis)
+        public static void Initialize(TestContext context)
         {
             using (var streamReader = new StreamReader("apikey.txt")) // This is .gitignored
             {
@@ -63,11 +64,29 @@ namespace BrawlhallaNetTests
         }
 
         [TestMethod]
+        public async Task TestGetRankedPlayerAsync()
+        {
+            var player = await client.GetRankedPlayerAsync(1003166);
+
+            // Could also fail at any time
+            Assert.AreEqual("(b)✨ithrowowowowowowowowowowow", player.Name);
+        }
+
+        [TestMethod]
         public async Task TestGetRankedPageAsync()
         {
             var topPlayers = await client.GetRankedPageAsync("1v1", "all", 1);
 
             Assert.AreNotEqual(0, topPlayers.Count);
+            Assert.IsFalse(String.IsNullOrEmpty(topPlayers.FirstOrDefault().Name));
+        }
+
+        [TestMethod]
+        public async Task TestGetInvalidRankedPlayerAsync() // if the player hasnt played a rank game yet. expect this to break
+        {
+            var invalidPlayer = await client.GetRankedPlayerAsync(457872);
+
+            Assert.AreEqual((ulong)0, invalidPlayer.BrawlhallaId);
         }
     }
 }

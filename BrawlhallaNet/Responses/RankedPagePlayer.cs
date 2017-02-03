@@ -28,5 +28,13 @@ namespace BrawlhallaNet.Responses
         public string Region { get; set; }
         [JsonProperty("peak_rating")]
         public int PeakElo { get; set; }
+
+        // 2v2 properties
+        [JsonProperty("teamname")]
+        public string TeamName { get; set; }
+        [JsonProperty("brawlhalla_id_one")]
+        public ulong PlayerOneID { get; set; }
+        [JsonProperty("brawlhalla_id_two")]
+        public ulong PlayerTwoID { get; set; }
     }
 }
