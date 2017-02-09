@@ -2,8 +2,8 @@
 A .NET library to interact with the Brawlhalla API.
 
 <h2>Installation</h2>
-Brawlhalla.Net is available from [NuGet](https://www.nuget.org/packages/Brawlhalla.Net/1.1.0). </br>
-Alternatively, you can install directly with `Install-Package Brawlhalla.Net`.
+Brawlhalla.Net is available from [NuGet](https://www.nuget.org/packages/Brawlhalla.Net). </br>
+Alternatively, you can install directly with `Install-Package Brawlhalla.NET`.
 
 <h2>Supported Frameworks</h2>
 Brawlhalla.Net targets `netstandard1.4`, some examples of supported frameworks include:
