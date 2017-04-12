@@ -1,17 +1,18 @@
 # Brawlhalla.Net
 A .NET library to interact with the Brawlhalla API.
 
-<h2>Installation</h2>
-Brawlhalla.Net is available from [NuGet](https://www.nuget.org/packages/Brawlhalla.Net). </br>
+## Installation
+Brawlhalla.Net is available from [NuGet](https://www.nuget.org/packages/Brawlhalla.Net).
+
 Alternatively, you can install directly with `Install-Package Brawlhalla.NET`.
 
-<h2>Supported Frameworks</h2>
+## Supported Frameworks
 Brawlhalla.Net targets `netstandard1.4`, some examples of supported frameworks include:
 
-.NET Core 1.1 </br>
+.NET Core 1.1
 .NET Framework 4.6.1+
 
-<h2>Example</h2>
+## Example
 ```cs
 using System;
 using System.Threading.Tasks;
@@ -54,10 +55,10 @@ class Program
 }
 ```
 
-<h2>Contributing</h2>
+## Contributing
 pls help
 
-<h2>Todo</h2>
+## Todo
 - [x] Beta release 🎉 </br>
 - [ ] Open issue with bugs </br>
 - [ ] Open issue with planned features </br>
@@ -65,9 +66,12 @@ pls help
 - [x] Start tests 🎉 </br>
 - [ ] Xml comments for every method </br>
 
-<h2>Contact</h2>
+## Contact
 Listed in order of how frequently I check them
 
-Discord: Stereotypical Weeaboo#9990 (118971536395730946) </br>
-Reddit: /u/CallMeSometimeNever </br>
+
+Discord: Stereotypical Weeaboo#9990 (118971536395730946)
+
+Reddit: /u/CallMeSometimeNever
+
 Email: Steaboo@gmail.com
